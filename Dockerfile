@@ -2,6 +2,9 @@ FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
-COPY . .
+COPY src/ /var/www/html/
 
-EXPOSE 80
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 9000
+CMD ["php-fpm"]
