@@ -64,9 +64,13 @@ services:
       - prometheus
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
     networks:
       - devops-test
 
 networks:
   devops-test:
     driver: bridge
+    
+volumes:
+  grafana-data:
