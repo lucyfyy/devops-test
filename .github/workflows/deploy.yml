@@ -23,7 +23,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             if [ ! -d "/root/devops-test" ]; then
-              git clone https://github.com/<username>/devops-test.git /root/devops-test
+              git clone https://github.com/lucyfyy/devops-test.git /root/devops-test
             fi
             cd /root/devops-test
             git pull origin main
