@@ -8,6 +8,6 @@
   <title>Hello</title>
 </head>
 <body>
-  <h1><?php echo "Hallo Dirubah"; ?></h1>
+  <h1><?php echo "Hallo Dirubah Dwi Wijaya"; ?></h1>
 </body>
 </html>
