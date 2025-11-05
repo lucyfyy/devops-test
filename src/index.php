@@ -8,6 +8,6 @@
   <title>Hello</title>
 </head>
 <body>
-  <h1><?php echo "Hallo Dirubah"; ?></h1>
+  <h1><?php echo "Hallo Dirubah HR 15:20 WIB"; ?></h1>
 </body>
 </html>
