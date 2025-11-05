@@ -1,4 +1,4 @@
-name: Deploy to Server
+name: Deploy Full Container Stack
 
 on:
   push:
@@ -24,13 +24,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push PHP image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops-test-php:latest
 
       - name: SSH deploy to server
         uses: appleboy/ssh-action@v1.2.0
@@ -39,7 +39,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
-            docker stop php-fpm || true
-            docker rm php-fpm || true
-            docker run -d --name php-fpm -p 80:80 ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
+            cd /root/devops-test
+            # optional: update repo jika masih pakai git
+            git pull || true
+            # jalankan semua container via docker-compose
+            docker compose down
+            docker compose pull
+            docker compose up -d --build
