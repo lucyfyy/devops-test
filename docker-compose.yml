@@ -24,16 +24,18 @@ services:
     networks:
       - devops-test
 
-  nginx-exporter:
-    image: nginx/nginx-prometheus-exporter:0.12.0
-    container_name: nginx-exporter
-    restart: always
-    ports:
-      - "9113:9113"
-    depends_on:
-      - nginx
-    networks:
-      - devops-test
+nginx-exporter:
+  image: nginx/nginx-prometheus-exporter:1.5
+  container_name: nginx-exporter
+  restart: always
+  ports:
+    - "9113:9113"
+  depends_on:
+    - nginx
+  networks:
+    - devops-test
+  command:
+    - --nginx.scrape-uri=http://nginx:80/stub_status
 
   node-exporter:
     image: prom/node-exporter:latest
