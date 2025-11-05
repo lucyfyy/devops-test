@@ -8,25 +8,38 @@ on:
       - test
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
+
+      - name: SSH deploy to server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            if [ ! -d "/root/devops-test" ]; then
-              git clone https://github.com/lucyfyy/devops-test.git /root/devops-test
-            fi
-            cd /root/devops-test
-            git pull origin main
-            docker compose down
-            docker compose up -d --build
-
+            docker pull ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
+            docker stop php-fpm || true
+            docker rm php-fpm || true
+            docker run -d --name php-fpm -p 80:80 ${{ secrets.DOCKER_USERNAME }}/devops-test:latest
