@@ -22,8 +22,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /root/devops-test || git clone https://github.com/<username>/devops-test.git /root/devops-test
+            if [ ! -d "/root/devops-test" ]; then
+              git clone https://github.com/<username>/devops-test.git /root/devops-test
+            fi
             cd /root/devops-test
-            git pull
-            docker-compose down
-            docker-compose up -d --build
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
+
