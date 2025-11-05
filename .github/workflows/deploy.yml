@@ -40,13 +40,15 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /root
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/lucyfyy/devops-test.git .
-            else
-              git reset --hard
-              git clean -fd
-              git pull origin main
+            if [ ! -d "devops-test" ]; then
+              git clone https://github.com/lucyfyy/devops-test.git
             fi
+            cd devops-test
+
+            git reset --hard
+            git clean -fd
+            git pull origin main
+            
             docker compose down
             docker compose pull
             docker compose up -d --build
